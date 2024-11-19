@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { Guardian, LocalGuardian, Student, UserName } from './student.interface';
 
 const userNameSchema = new Schema<UserName>(
@@ -29,6 +29,7 @@ const localGuardianSchema = new Schema<LocalGuardian>(
     }
 )
 
+// create schema for student
 const studentSchema = new Schema<Student>({
     id: { type: String },
     name: userNameSchema,
@@ -45,3 +46,6 @@ const studentSchema = new Schema<Student>({
     profileImage: { type: String },
     isActive: ['active', 'inactive']
 })
+
+// create model for student
+export const StudentModel = model<Student>('Student', studentSchema)
