@@ -25,7 +25,7 @@ export type Student = {
     id: string;
     name: UserName,
     gender: "male" | "female";
-    dateOfBirth: string;
+    dateOfBirth?: string;
     email: string;
     contactNumber: string; // we want to access 0
     emergencyContactNumber: string; // we want to access 0
