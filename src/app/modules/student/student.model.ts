@@ -1,4 +1,6 @@
 import { Schema, model } from 'mongoose';
+// import validator from 'validator';
+
 import {
   Guardian,
   LocalGuardian,
@@ -11,10 +13,25 @@ const userNameSchema = new Schema<UserName>({
     type: String,
     required: [true, "First Name is required"],
     trim: true, // remove space from front and end
-    maxlength: [20, "First name can not be more than 20 character"]
+    maxlength: [20, "First name can not be more than 20 character"],
+    // validate: {
+    //   validator: function (value: string) {
+    //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
+    //     return firstNameStr === value;
+    //   },
+    //   message: "{VALUE} should be in capitalized form"
+    // }
   },
   middleName: { type: String, trim: true },
-  lastName: { type: String, required: [true, "Last Name is required"], trim: true },
+  lastName: {
+    type: String,
+    required: [true, "Last Name is required"],
+    trim: true,
+    // validate: {
+    //   validator: (value: string) => validator.isAlpha(value),
+    //   message: "{VALUE} is not alphabetic format"
+    // }
+  },
 });
 
 const guardianSchema = new Schema<Guardian>({
@@ -47,7 +64,15 @@ const studentSchema = new Schema<Student>({
     required: true
   },
   dateOfBirth: { type: Date },
-  email: { type: String, unique: true, required: [true, 'Email should be unique'] },
+  email: {
+    type: String,
+    unique: true,
+    required: [true, 'Email should be unique'],
+    // validate: {
+    //   validator: (value) => validator.isEmail(value),
+    //   message: "{VALUE} is not an email"
+    // }
+  },
   contactNumber: { type: String, required: true },
   emergencyContactNumber: { type: String, required: true },
   bloodGroup: {
