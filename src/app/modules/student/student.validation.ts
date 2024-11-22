@@ -81,6 +81,7 @@ export const studentValidationSchema = z.object({
     isActive: z.enum(['active', 'inactive'], {
         errorMap: () => ({ message: "Status must be 'active' or 'inactive'" }),
     }),
+    isDeleted: z.boolean()
 });
 
 export default studentValidationSchema;
