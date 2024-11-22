@@ -2,18 +2,20 @@ import { Schema, model } from 'mongoose';
 // import validator from 'validator';
 
 import {
-  Guardian,
-  LocalGuardian,
-  Student,
-  UserName,
+  TStudent,
+  TGuardian,
+  TLocalGuardian,
+  TUserName,
+  StudentMethod,
+  StudentModel,
 } from './student.interface';
 
-const userNameSchema = new Schema<UserName>({
+const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
-    required: [true, "First Name is required"],
+    required: [true, 'First Name is required'],
     trim: true, // remove space from front and end
-    maxlength: [20, "First name can not be more than 20 character"],
+    maxlength: [20, 'First name can not be more than 20 character'],
     // validate: {
     //   validator: function (value: string) {
     //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
@@ -25,7 +27,7 @@ const userNameSchema = new Schema<UserName>({
   middleName: { type: String, trim: true },
   lastName: {
     type: String,
-    required: [true, "Last Name is required"],
+    required: [true, 'Last Name is required'],
     trim: true,
     // validate: {
     //   validator: (value: string) => validator.isAlpha(value),
@@ -34,7 +36,7 @@ const userNameSchema = new Schema<UserName>({
   },
 });
 
-const guardianSchema = new Schema<Guardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: { type: String, required: true, trim: true },
   fatherOccupation: { type: String, required: true },
   fatherContactNo: { type: String, required: true },
@@ -43,7 +45,7 @@ const guardianSchema = new Schema<Guardian>({
   motherContactNo: { type: String, required: true },
 });
 
-const localGuardianSchema = new Schema<LocalGuardian>({
+const localGuardianSchema = new Schema<TLocalGuardian>({
   name: { type: String, required: true, trim: true },
   occupation: { type: String, required: true },
   contactNo: { type: String, required: true },
@@ -51,17 +53,18 @@ const localGuardianSchema = new Schema<LocalGuardian>({
 });
 
 // create schema for student
-const studentSchema = new Schema<Student>({
-  id: { type: String, unique: true, required: [true, "Already exist"] },
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethod>({
+  id: { type: String, unique: true, required: [true, 'Already exist'] },
   name: { type: userNameSchema, required: true },
   gender: {
     type: String,
     enum: {
       values: ['male', 'female', 'other'],
       // message: "{VALUE} is not supported"
-      message: "The gender field can only be the one of the following: 'male', 'female', or 'other'"
+      message:
+        "The gender field can only be the one of the following: 'male', 'female', or 'other'",
     },
-    required: true
+    required: true,
   },
   dateOfBirth: { type: Date },
   email: {
@@ -79,9 +82,10 @@ const studentSchema = new Schema<Student>({
     type: String,
     enum: {
       values: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-      message: "{VALUE} is not valid. The bloodGroup field can only be the one of the following: 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'"
+      message:
+        "{VALUE} is not valid. The bloodGroup field can only be the one of the following: 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'",
     },
-    required: true
+    required: true,
   },
   permanentAddress: { type: String, required: true },
   presentAddress: { type: String, required: true },
@@ -92,12 +96,17 @@ const studentSchema = new Schema<Student>({
     type: String,
     enum: {
       values: ['active', 'inactive'],
-      message: "{VALUE} is not valid. Use 'active' or 'inactive'"
+      message: "{VALUE} is not valid. Use 'active' or 'inactive'",
     },
     required: true,
-    default: 'active'
+    default: 'active',
   },
 });
 
+studentSchema.methods.isUserExist = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
+
 // create model for student
-export const StudentModel = model<Student>('Student', studentSchema);
+export const Student = model<TStudent, StudentModel>('Student', studentSchema);

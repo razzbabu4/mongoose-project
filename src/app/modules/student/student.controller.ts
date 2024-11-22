@@ -8,10 +8,9 @@ const createStudent = async (req: Request, res: Response) => {
 
     // validation with zod
 
-    const zodParseData = studentValidationSchema.parse(studentData)
+    const zodParseData = studentValidationSchema.parse(studentData);
 
     // console.log("Validation successful", zodParseData);
-
 
     // validation with joi
     // const { error, value } = studentJoiSchema.validate(studentData);
@@ -35,13 +34,12 @@ const createStudent = async (req: Request, res: Response) => {
       message: 'Student is create successfully',
       data: result,
     });
-
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: "Internal server error",
-      error: error
-    })
+      message: error.message || 'Internal server error',
+      error: error,
+    });
   }
 };
 
