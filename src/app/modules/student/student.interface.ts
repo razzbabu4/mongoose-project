@@ -24,6 +24,7 @@ export type TLocalGuardian = {
 
 export type TStudent = {
   id: string;
+  password: string,
   name: TUserName;
   gender: 'male' | 'female' | 'other';
   dateOfBirth?: string;
@@ -38,6 +39,7 @@ export type TStudent = {
   profileImage?: string;
   isActive: 'active' | 'inactive';
 };
+
 
 // for creating static method
 export interface StudentModel extends Model<TStudent> {
