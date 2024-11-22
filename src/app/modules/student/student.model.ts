@@ -56,8 +56,8 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 
 // create schema for student
 const studentSchema = new Schema<TStudent, StudentModel>({
-  id: { type: String, unique: true, required: [true, 'Id already exist'] },
-  password: { type: String, unique: true, required: [true, 'Password already exist'], maxlength: [20, "Password can not be more than 20 character"] },
+  id: { type: String, unique: true, required: [true, 'Id is required'] },
+  password: { type: String, required: [true, 'Password is required'], maxlength: [20, "Password can not be more than 20 character"] },
   name: { type: userNameSchema, required: true },
   gender: {
     type: String,
@@ -119,8 +119,10 @@ studentSchema.pre("save", async function (next) {
 })
 
 // post save middleware/hook
-studentSchema.post("save", function () {
-  console.log(this, "post hook: we saved our data");
+studentSchema.post("save", function (doc, next) {
+  doc.password = "";
+  next();
+  // console.log(this, "post hook: we saved our data");
 })
 
 
