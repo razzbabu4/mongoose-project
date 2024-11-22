@@ -7,7 +7,6 @@ const createStudent = async (req: Request, res: Response) => {
     const { student: studentData } = req.body;
 
     // validation with zod
-
     const zodParseData = studentValidationSchema.parse(studentData);
 
     // console.log("Validation successful", zodParseData);

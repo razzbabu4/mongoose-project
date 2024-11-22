@@ -105,7 +105,16 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     default: 'active',
   },
   isDeleted: { type: Boolean, default: false }
+}, {
+  toJSON: {
+    virtuals: true
+  }
 });
+
+// virtual in mongoose
+studentSchema.virtual("fullName").get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
+})
 
 
 // Document middleware ==> save
