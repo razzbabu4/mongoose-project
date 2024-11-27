@@ -1,7 +1,7 @@
 import { TStudent } from './student.interface';
 import { Student } from './student.model';
 
-const createStudentIntoDB = async (studentData: TStudent) => {
+const createStudentIntoDB = async (studentData: TStudent): Promise<TStudent> => {
   // custom static method
   if (await Student.isUserExist(studentData.id)) {
     throw new Error('User is already exist');
