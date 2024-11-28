@@ -1,24 +1,24 @@
-import { TStudent } from './student.interface';
+// import { TStudent } from './student.interface';
 import { Student } from './student.model';
 
-const createStudentIntoDB = async (studentData: TStudent): Promise<TStudent> => {
-  // custom static method
-  if (await Student.isUserExist(studentData.id)) {
-    throw new Error('User is already exist');
-  }
+// const createStudentIntoDB = async (studentData: TStudent): Promise<TStudent> => {
+//   // custom static method
+//   if (await Student.isUserExist(studentData.id)) {
+//     throw new Error('User is already exist');
+//   }
 
-  const result = await Student.create(studentData); // built-in static method
+//   const result = await Student.create(studentData); // built-in static method
 
-  // creating instance
-  // const student = new Student(studentData); // create an instance
+//   // creating instance
+//   // const student = new Student(studentData); // create an instance
 
-  // if (await student.isUserExist(studentData.id)) {
-  //   throw new Error('Student is already exist'); // custom instance
-  // }
-  // const result = await student.save(); // built-in instance method
+//   // if (await student.isUserExist(studentData.id)) {
+//   //   throw new Error('Student is already exist'); // custom instance
+//   // }
+//   // const result = await student.save(); // built-in instance method
 
-  return result;
-};
+//   return result;
+// };
 
 const getAllStudentFromDB = async () => {
   const result = await Student.find();
@@ -40,7 +40,7 @@ const deleteSingleStudentFromDB = async (id: string) => {
 }
 
 export const StudentServices = {
-  createStudentIntoDB,
+  // createStudentIntoDB,
   getAllStudentFromDB,
   getSingleStudentFromDB,
   deleteSingleStudentFromDB
