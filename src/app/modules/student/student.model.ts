@@ -77,10 +77,6 @@ const studentSchema = new Schema<TStudent>({
     type: String,
     unique: true,
     required: [true, 'Email should be unique'],
-    // validate: {
-    //   validator: (value) => validator.isEmail(value),
-    //   message: "{VALUE} is not an email"
-    // }
   },
   contactNumber: { type: String, required: true },
   emergencyContactNumber: { type: String, required: true },
@@ -98,7 +94,7 @@ const studentSchema = new Schema<TStudent>({
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
   profileImage: { type: String },
-  isDeleted: { type: Boolean, default: false }
+  // isDeleted: { type: Boolean, default: false }
 });
 
 // // virtual in mongoose
