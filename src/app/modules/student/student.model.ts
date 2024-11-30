@@ -7,7 +7,7 @@ import {
   TLocalGuardian,
   TUserName,
   // StudentMethod,  // for creating instance
-  StudentModel,
+  // StudentModel,
 } from './student.interface';
 
 const userNameSchema = new Schema<TUserName>({
@@ -53,7 +53,7 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
 });
 
 // create schema for student
-const studentSchema = new Schema<TStudent, StudentModel>({
+const studentSchema = new Schema<TStudent>({
   id: { type: String, unique: true, required: [true, 'Id is required'] },
   user: {
     type: Schema.Types.ObjectId,
@@ -99,16 +99,12 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   localGuardian: { type: localGuardianSchema, required: true },
   profileImage: { type: String },
   isDeleted: { type: Boolean, default: false }
-}, {
-  toJSON: {
-    virtuals: true
-  }
 });
 
-// virtual in mongoose
-studentSchema.virtual("fullName").get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
-})
+// // virtual in mongoose
+// studentSchema.virtual("fullName").get(function () {
+//   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
+// })
 
 
 // Query middleware ==> find
@@ -140,4 +136,4 @@ studentSchema.statics.isUserExist = async function (id: string) {
 };
 
 // create model for student
-export const Student = model<TStudent, StudentModel>('Student', studentSchema);
+export const Student = model<TStudent>('Student', studentSchema);
