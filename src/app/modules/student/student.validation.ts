@@ -55,7 +55,7 @@ export const createStudentValidationSchema = z.object({
                     message: "Gender must be 'male', 'female', or 'other'",
                 }),
             }),
-            dateOfBirth: z.date().optional(),
+            dateOfBirth: z.string().optional(),
             email: z
                 .string()
                 .email({ message: 'Invalid email address' })
@@ -79,9 +79,6 @@ export const createStudentValidationSchema = z.object({
             guardian: guardianValidationSchema,
             localGuardian: localGuardianValidationSchema,
             profileImage: z.string().optional(),
-            isActive: z.enum(['active', 'inactive'], {
-                errorMap: () => ({ message: "Status must be 'active' or 'inactive'" }),
-            }),
         })
     })
 });

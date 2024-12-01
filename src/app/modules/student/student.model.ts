@@ -72,7 +72,7 @@ const studentSchema = new Schema<TStudent>({
     },
     required: true,
   },
-  dateOfBirth: { type: Date },
+  dateOfBirth: { type: String },
   email: {
     type: String,
     unique: true,
@@ -94,7 +94,6 @@ const studentSchema = new Schema<TStudent>({
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
   profileImage: { type: String },
-  // isDeleted: { type: Boolean, default: false }
 });
 
 // // virtual in mongoose
