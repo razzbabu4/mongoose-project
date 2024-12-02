@@ -94,6 +94,11 @@ const studentSchema = new Schema<TStudent>({
   guardian: { type: guardianSchema, required: true },
   localGuardian: { type: localGuardianSchema, required: true },
   profileImage: { type: String },
+  admissionSemester: {
+    type: Schema.Types.ObjectId,
+    required: [true, 'Semester id is required'],
+    ref: "AcademicSemester"
+  }
 });
 
 // // virtual in mongoose
