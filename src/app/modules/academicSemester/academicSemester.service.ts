@@ -1,9 +1,9 @@
+
 import { academicSemesterNameCodeMapper } from "./academicSemester.constant";
 import { TAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";
 
 const createAcademicSemesterIntoDB = async (academicSemester: TAcademicSemester) => {
-
 
     // academicSemesterNameCodeMapper[academicSemester.name] = 01 | 02 | 03
     if (academicSemesterNameCodeMapper[academicSemester.name] !== academicSemester.code) {
@@ -14,6 +14,24 @@ const createAcademicSemesterIntoDB = async (academicSemester: TAcademicSemester)
     return newSemester;
 };
 
+const getAllAcademicSemesterFromDB = async () => {
+    const result = await AcademicSemester.find();
+    return result;
+}
+
+const getSingleAcademicSemesterFromDB = async (id: string) => {
+    const result = await AcademicSemester.findById(id);
+    return result;
+}
+
+const updateSingleAcademicSemesterIntoDB = async (id: string, data: TAcademicSemester) => {
+    const result = await AcademicSemester.findByIdAndUpdate(id, data, { new: true });
+    return result;
+}
+
 export const AcademicSemesterServices = {
-    createAcademicSemesterIntoDB
+    createAcademicSemesterIntoDB,
+    getAllAcademicSemesterFromDB,
+    getSingleAcademicSemesterFromDB,
+    updateSingleAcademicSemesterIntoDB
 }

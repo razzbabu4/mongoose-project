@@ -18,6 +18,7 @@ const moduleRoutes = [
         path: '/academic-semester',
         route: AcademicSemesterRoutes
     },
+
 ]
 
 moduleRoutes.forEach(route => router.use(route.path, route.route))
