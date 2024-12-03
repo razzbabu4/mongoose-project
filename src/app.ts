@@ -24,7 +24,7 @@ app.get('/', getAController);
 // global error handler
 app.use(globalErrorHandler)
 
-// not found
+// not found from middleware
 app.use(notFound)
 
 export default app;

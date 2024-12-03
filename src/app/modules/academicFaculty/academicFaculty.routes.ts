@@ -2,6 +2,7 @@ import express from 'express'
 import { AcademicFacultyControllers } from './academicFaculty.controller';
 import validateRequest from '../middlewares/validateRequest';
 import { AcademicFacultyValidation } from './academicValidation';
+
 const router = express.Router();
 
 router.post('/create-academic-faculty', validateRequest(AcademicFacultyValidation.createAcademicFacultyValidationSchema), AcademicFacultyControllers.createAcademicFaculty);
