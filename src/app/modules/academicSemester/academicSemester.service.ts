@@ -3,14 +3,14 @@ import { academicSemesterNameCodeMapper } from "./academicSemester.constant";
 import { TAcademicSemester } from "./academicSemester.interface";
 import { AcademicSemester } from "./academicSemester.model";
 
-const createAcademicSemesterIntoDB = async (academicSemester: TAcademicSemester) => {
+const createAcademicSemesterIntoDB = async (payload: TAcademicSemester) => {
 
-    // academicSemesterNameCodeMapper[academicSemester.name] = 01 | 02 | 03
-    if (academicSemesterNameCodeMapper[academicSemester.name] !== academicSemester.code) {
+    // academicSemesterNameCodeMapper[payload.name] = 01 | 02 | 03
+    if (academicSemesterNameCodeMapper[payload.name] !== payload.code) {
         throw new Error('Mismatch with semester and code')
     }
 
-    const newSemester = await AcademicSemester.create(academicSemester);
+    const newSemester = await AcademicSemester.create(payload);
     return newSemester;
 };
 
@@ -24,11 +24,11 @@ const getSingleAcademicSemesterFromDB = async (id: string) => {
     return result;
 }
 
-const updateSingleAcademicSemesterIntoDB = async (id: string, data: Partial<TAcademicSemester>) => {
-    if (data.name && data.code && academicSemesterNameCodeMapper[data.name] !== data.code) {
+const updateSingleAcademicSemesterIntoDB = async (id: string, payload: Partial<TAcademicSemester>) => {
+    if (payload.name && payload.code && academicSemesterNameCodeMapper[payload.name] !== payload.code) {
         throw new Error('Invalid semester code')
     }
-    const result = await AcademicSemester.findByIdAndUpdate(id, data, { new: true });
+    const result = await AcademicSemester.findByIdAndUpdate(id, payload, { new: true });
     return result;
 }
 
