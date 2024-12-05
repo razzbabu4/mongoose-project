@@ -4,6 +4,7 @@ import { Student } from './student.model';
 import AppError from '../../errors/AppError';
 import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
+import { TStudent } from './student.interface';
 
 // const createStudentIntoDB = async (studentData: TStudent): Promise<TStudent> => {
 //   // custom static method
@@ -52,6 +53,41 @@ const getSingleStudentFromDB = async (id: string) => {
   return result;
 };
 
+const updateSingleStudentIntoDB = async (
+  id: string,
+  payload: Partial<TStudent>,
+) => {
+  // dynamically update primitive and non-primitive data
+  const { name, guardian, localGuardian, ...restStudentData } = payload;
+
+  const modifiedUpdatedData: Record<string, unknown> = { ...restStudentData };
+
+  // dynamically update non-primitive data name
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+  // dynamically update non-primitive data guardian
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+  // dynamically update non-primitive data localGuardian
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  const result = await Student.findOneAndUpdate({ id }, modifiedUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+
 const deleteSingleStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
   try {
@@ -92,5 +128,6 @@ export const StudentServices = {
   // createStudentIntoDB,
   getAllStudentFromDB,
   getSingleStudentFromDB,
+  updateSingleStudentIntoDB,
   deleteSingleStudentFromDB,
 };
