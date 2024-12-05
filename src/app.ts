@@ -13,7 +13,6 @@ app.use(cors());
 // application routes
 app.use('/api/v1', router);
 
-
 const getAController = (req: Request, res: Response) => {
   const a = 10;
   res.send(a);
@@ -22,10 +21,10 @@ const getAController = (req: Request, res: Response) => {
 app.get('/', getAController);
 
 // global error handler
-app.use(globalErrorHandler)
+app.use(globalErrorHandler);
 
 // not found from middleware
-app.use(notFound)
+app.use(notFound);
 
 export default app;
 

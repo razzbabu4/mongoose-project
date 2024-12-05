@@ -9,6 +9,9 @@ import {
   // StudentMethod,  // for creating instance
   // StudentModel,
 } from './student.interface';
+import AppError from '../../errors/AppError';
+import { UpdateQuery } from 'mongoose';
+import { StatusCodes } from 'http-status-codes';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -59,7 +62,7 @@ const studentSchema = new Schema<TStudent>({
     type: Schema.Types.ObjectId,
     unique: true,
     required: [true, 'User id is required'],
-    ref: "User"
+    ref: 'User',
   },
   name: { type: userNameSchema, required: true },
   gender: {
@@ -97,13 +100,17 @@ const studentSchema = new Schema<TStudent>({
   admissionSemester: {
     type: Schema.Types.ObjectId,
     required: [true, 'Semester id is required'],
-    ref: "AcademicSemester"
+    ref: 'AcademicSemester',
   },
   academicDepartment: {
     type: Schema.Types.ObjectId,
     required: [true, 'Department id is required'],
-    ref: "AcademicDepartment"
-  }
+    ref: 'AcademicDepartment',
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // // virtual in mongoose
@@ -111,28 +118,46 @@ const studentSchema = new Schema<TStudent>({
 //   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
 // })
 
+// Query middleware => check before deleting
+studentSchema.pre('findOneAndUpdate', async function (next) {
+  const query = this.getQuery();
+  const update = this.getUpdate() as UpdateQuery<TStudent>;
+
+  if (query.id) {
+    await Student.findOne(query).exec();
+  }
+
+  if (update.isDeleted === true) {
+    throw new AppError(
+      StatusCodes.BAD_REQUEST,
+      'This student has been marked as deleted and cannot be deleted.',
+    );
+  }
+
+  next();
+});
 
 // Query middleware ==> find
-studentSchema.pre("find", function (next) {
-  this.find({ isDeleted: { $ne: true } })
+studentSchema.pre('find', function (next) {
+  this.find({ isDeleted: { $ne: true } });
   // console.log(this);
-  next()
-})
+  next();
+});
 
 // Query middleware ==> findOne
-studentSchema.pre("findOne", function (next) {
-  this.find({ isDeleted: { $ne: true } })
+studentSchema.pre('findOne', function (next) {
+  this.find({ isDeleted: { $ne: true } });
   // console.log(this);
-  next()
-})
+  next();
+});
 
 // Query middleware => aggregate
 // this.pipeline() => [ { '$match': { id: '123456' } } ]
-studentSchema.pre("aggregate", async function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } })
+studentSchema.pre('aggregate', async function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   // console.log(this.pipeline());
   next();
-})
+});
 
 // creating a custom static method
 studentSchema.statics.isUserExist = async function (id: string) {

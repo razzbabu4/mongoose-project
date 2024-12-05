@@ -1,4 +1,3 @@
-
 import { StudentServices } from './student.service';
 import sendResponse from '../../utils/sendResponse';
 import { StatusCodes } from 'http-status-codes';
@@ -12,12 +11,11 @@ const getAllStudents = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'Retrieve students data successfully',
-    data: result
-  })
-})
+    data: result,
+  });
+});
 
 const getSingleStudent = catchAsync(async (req, res) => {
-
   const { studentId } = req.params;
   const result = await StudentServices.getSingleStudentFromDB(studentId);
 
@@ -26,25 +24,25 @@ const getSingleStudent = catchAsync(async (req, res) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'Single student retrieve successfully',
-    data: result
-  })
-})
+    data: result,
+  });
+});
 
 const deleteSingleStudent = catchAsync(async (req, res) => {
-  const { studentId } = req.params
+  const { studentId } = req.params;
   const result = await StudentServices.deleteSingleStudentFromDB(studentId);
 
   // send response using utils
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Single student updated successfully',
-    data: result
-  })
-})
+    message: 'Single student deleted successfully',
+    data: result,
+  });
+});
 
 export const StudentController = {
   getAllStudents,
   getSingleStudent,
-  deleteSingleStudent
+  deleteSingleStudent,
 };
