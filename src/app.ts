@@ -13,7 +13,7 @@ app.use(cors());
 // application routes
 app.use('/api/v1', router);
 
-const getAController = async (req: Request, res: Response) => {
+const getAController = (req: Request, res: Response) => {
   const a = 10;
   res.send(a);
 };
