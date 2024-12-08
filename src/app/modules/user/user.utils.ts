@@ -1,7 +1,7 @@
 import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
 import { User } from './user.model';
 
-const findLstStudentId = async () => {
+const findLastStudentId = async () => {
   const lastStudent = await User.findOne(
     {
       role: 'student',
@@ -23,7 +23,7 @@ const findLstStudentId = async () => {
 export const generatedStudentId = async (semesterData: TAcademicSemester) => {
   let currentId = (0).toString(); // by default
 
-  const lastStudentId = await findLstStudentId();
+  const lastStudentId = await findLastStudentId();
 
   const lastStudentSemesterYear = lastStudentId?.substring(0, 4); // 2030
   const lastStudentSemesterCode = lastStudentId?.substring(4, 6); // 01
