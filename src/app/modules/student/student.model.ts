@@ -115,13 +115,16 @@ const studentSchema = new Schema<TStudent>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   },
 );
 
 // // virtual in mongoose
-// studentSchema.virtual("fullName").get(function () {
-//   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`
-// })
+studentSchema.virtual('fullName').get(function () {
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
+});
 
 // Query middleware => check before deleting
 studentSchema.pre('findOneAndUpdate', async function (next) {
