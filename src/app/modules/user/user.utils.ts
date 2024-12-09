@@ -43,3 +43,32 @@ export const generatedStudentId = async (semesterData: TAcademicSemester) => {
   incrementId = `${semesterData.year}${semesterData.code}${incrementId}`;
   return incrementId;
 };
+
+const findLastFacultyId = async () => {
+  const lastFaculty = await User.findOne(
+    {
+      role: 'faculty',
+    },
+    {
+      id: 1,
+      _id: 0,
+    },
+  )
+    .sort({
+      createdAt: -1,
+    })
+    .lean();
+  // return lastFaculty?.id ? lastFaculty.id.substring(6) : undefined; // skip first 6 digit using substring
+  return lastFaculty?.id ? lastFaculty.id : undefined;
+};
+
+export const generateFacultyId = async () => {
+  let currentId = (0).toString();
+  const lastFacultyId = await findLastFacultyId();
+  if (lastFacultyId) {
+    currentId = lastFacultyId.substring(2);
+  }
+  let incrementId = (Number(currentId) + 1).toString().padStart(4, '0');
+  incrementId = `F-${incrementId}`;
+  return incrementId;
+};
