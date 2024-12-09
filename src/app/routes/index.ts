@@ -21,6 +21,10 @@ const moduleRoutes = [
     path: '/faculties',
     route: FacultyRoute,
   },
+  // {
+  //   path: '/admins',
+  //   route: ,
+  // },
   {
     path: '/academic-semesters',
     route: AcademicSemesterRoutes,

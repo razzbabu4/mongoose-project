@@ -1,5 +1,11 @@
 import { Types } from 'mongoose';
 
+export type TAdminUserName = {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+};
+
 export type TGender = 'male' | 'female' | 'other';
 export type TBloodGroup =
   | 'A+'
@@ -11,18 +17,12 @@ export type TBloodGroup =
   | 'O+'
   | 'O-';
 
-export type TFacultyUserName = {
-  firstName: string;
-  middleName?: string;
-  lastName: string;
-};
-
-export type TFaculty = {
+export type TAdmin = {
   id: string;
   user: Types.ObjectId;
   designation: string;
-  name: TFacultyUserName;
-  gender: 'male' | 'female' | 'other';
+  name: TAdminUserName;
+  gender: TGender;
   dateOfBirth?: string;
   email: string;
   contactNumber: string;
@@ -31,7 +31,5 @@ export type TFaculty = {
   presentAddress: string;
   permanentAddress: string;
   profileImage?: string;
-  academicFaculty: Types.ObjectId;
-  academicDepartment: Types.ObjectId;
   isDeleted: boolean;
 };
