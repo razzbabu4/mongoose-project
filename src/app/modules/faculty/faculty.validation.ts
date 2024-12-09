@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Zod schema for TFacultyUserName
-const userNameSchema = z.object({
+const createUserNameValidationSchema = z.object({
   firstName: z
     .string()
     .trim()
@@ -19,7 +19,7 @@ const createFacultyValidationSchema = z.object({
       .nonempty({ message: 'Password is required' })
       .max(20, { message: 'Password cannot be more than 20 characters' }),
     faculty: z.object({
-      name: userNameSchema,
+      name: createUserNameValidationSchema,
       designation: z.string().min(1, 'Designation is required'),
       gender: z.enum(['male', 'female', 'other'], {
         errorMap: () => ({
@@ -46,7 +46,53 @@ const createFacultyValidationSchema = z.object({
   }),
 });
 
+// Updated Zod schema for TFacultyUserName
+const updateUserNameValidationSchema = z.object({
+  firstName: z
+    .string()
+    .trim()
+    .max(20, { message: 'First name cannot be more than 20 characters' })
+    .optional(), // Made optional
+  middleName: z.string().trim().optional(),
+  lastName: z
+    .string()
+    .trim()
+    .max(20, { message: 'Last name cannot be more than 20 characters' })
+    .optional(), // Made optional
+});
+
+// Zod schema for updating Faculty
+const updateFacultyValidationSchema = z.object({
+  body: z.object({
+    faculty: z
+      .object({
+        name: updateUserNameValidationSchema.optional(), // Made optional
+        designation: z.string().optional(), // Made optional
+        gender: z
+          .enum(['male', 'female', 'other'], {
+            errorMap: () => ({
+              message:
+                "The gender field can only be one of the following: 'male', 'female', or 'other'",
+            }),
+          })
+          .optional(), // Made optional
+        dateOfBirth: z.string().optional(),
+        email: z.string().email('Invalid email address').optional(), // Made optional
+        contactNumber: z.string().optional(), // Made optional
+        emergencyContactNumber: z.string().optional(), // Made optional
+        permanentAddress: z.string().optional(), // Made optional
+        presentAddress: z.string().optional(), // Made optional
+        profileImage: z.string().optional(),
+        academicFaculty: z.string().optional(), // Made optional
+        academicDepartment: z.string().optional(), // Made optional
+        isDeleted: z.boolean().optional(),
+      })
+      .optional(), // Made optional
+  }),
+});
+
 // Export the Zod schema
 export const FacultyValidationSchema = {
   createFacultyValidationSchema,
+  updateFacultyValidationSchema,
 };

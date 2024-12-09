@@ -1,0 +1,82 @@
+import mongoose from 'mongoose';
+import { TFaculty } from './faculty.interface';
+import { Faculty } from './faculty.model';
+import AppError from '../../errors/AppError';
+import { StatusCodes } from 'http-status-codes';
+import { User } from '../user/user.model';
+
+const getAllFacultyFromDB = async () => {
+  const result = await Faculty.find();
+  return result;
+};
+
+const getSingleFacultyFromDB = async (id: string) => {
+  const result = await Faculty.findOne({ id });
+  return result;
+};
+
+const updateSingleFacultyIntoDB = async (
+  id: string,
+  payload: Partial<TFaculty>,
+) => {
+  // dynamically update primitive and non-primitive data
+  const { name, ...restFacultyData } = payload;
+  const modifyUpdatedData: Record<string, unknown> = { ...restFacultyData };
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifyUpdatedData[`name.${key}`] = value;
+    }
+  }
+  const result = await Faculty.findOneAndUpdate({ id }, modifyUpdatedData, {
+    new: true,
+    runValidators: true,
+  });
+  return result;
+};
+
+const deleteSingleFacultyFromDB = async (id: string) => {
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // update faculty with delete property true
+    const deletedFaculty = await Faculty.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    if (!deletedFaculty) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'Faculty could not found');
+    }
+
+    // update faculty User with delete property true
+    const deletedUser = await User.findOneAndUpdate(
+      { id },
+      { isDeleted: true },
+      { new: true, session },
+    );
+
+    if (!deletedUser) {
+      throw new AppError(StatusCodes.BAD_REQUEST, 'User could not found');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return { deletedFaculty, deletedUser };
+  } catch (error) {
+    session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
+};
+
+export const FacultyServices = {
+  getAllFacultyFromDB,
+  getSingleFacultyFromDB,
+  updateSingleFacultyIntoDB,
+  deleteSingleFacultyFromDB,
+};
