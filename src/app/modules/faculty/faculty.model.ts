@@ -54,23 +54,23 @@ const facultySchema = new Schema<TFaculty>(
         message:
           "{VALUE} is not valid. The bloodGroup field can only be the one of the following: 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'",
       },
-      permanentAddress: { type: String, required: true },
-      presentAddress: { type: String, required: true },
-      profileImage: { type: String },
-      academicFaculty: {
-        type: Schema.Types.ObjectId,
-        required: [true, 'Academic Faculty id is required'],
-        ref: 'AcademicFaculty',
-      },
-      academicDepartment: {
-        type: Schema.Types.ObjectId,
-        required: [true, 'Department id is required'],
-        ref: 'AcademicDepartment',
-      },
-      isDeleted: {
-        type: Boolean,
-        default: false,
-      },
+    },
+    permanentAddress: { type: String, required: true },
+    presentAddress: { type: String, required: true },
+    profileImage: { type: String },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'Academic Faculty id is required'],
+      ref: 'AcademicFaculty',
+    },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'Department id is required'],
+      ref: 'AcademicDepartment',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {
