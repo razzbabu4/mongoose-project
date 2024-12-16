@@ -20,12 +20,12 @@ const createSemesterRegistration = catchAsync(async (req, res) => {
 });
 
 const getAllSemesterRegistration = catchAsync(async (req, res) => {
-    const result = await SemesterRegistrationsServices.getAllSemesterRegistrationsFromDB();
+    const result = await SemesterRegistrationsServices.getAllSemesterRegistrationsFromDB(req?.query);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Retrieve all Registration successfully',
+        message: 'Retrieve all Registration Semester successfully',
         data: result,
     });
 });

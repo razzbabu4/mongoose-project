@@ -3,6 +3,7 @@ import AppError from "../../errors/AppError";
 import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { TSemesterRegistration } from "./semesterRegistrations.interface";
 import { SemesterRegistrations } from "./semesterRegistrations.model";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createSemesterRegistrationsIntoDB = async (payload: TSemesterRegistration) => {
     // check ,if the semester exist
@@ -23,7 +24,18 @@ const createSemesterRegistrationsIntoDB = async (payload: TSemesterRegistration)
 
 };
 
-const getAllSemesterRegistrationsFromDB = async () => {
+const getAllSemesterRegistrationsFromDB = async (query: Record<string, unknown>) => {
+    const semesterRegistrationQuery = new QueryBuilder(
+        SemesterRegistrations.find().populate('academicSemester'),
+        query
+    )
+        .filter()
+        .sort()
+        .paginate()
+        .fields()
+
+    const result = await semesterRegistrationQuery.modelQuery;
+    return result;
 
 };
 
