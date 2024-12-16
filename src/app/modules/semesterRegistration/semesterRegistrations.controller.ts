@@ -31,24 +31,24 @@ const getAllSemesterRegistration = catchAsync(async (req, res) => {
 });
 
 const getSingleSemesterRegistration = catchAsync(async (req, res) => {
-    // const { semesterId } = req.params;
+    const { id } = req.params;
     const result =
-        await SemesterRegistrationsServices.getSingleSemesterRegistrationsFromDB();
+        await SemesterRegistrationsServices.getSingleSemesterRegistrationsFromDB(id);
 
     sendResponse(res, {
         statusCode: StatusCodes.OK,
         success: true,
-        message: 'Retrieve single  Registration successfully',
+        message: 'Retrieve single registration semester successfully',
         data: result,
     });
 });
 
 const updateSingleSemesterRegistration = catchAsync(async (req, res) => {
-    //   const { semesterId } = req.params;
-    //   const payload = req.body;
+    const { id } = req.params;
+    const payload = req.body;
     const result =
         await SemesterRegistrationsServices.updateSingleSemesterRegistrationsIntoDB(
-
+            id, payload
         );
 
     sendResponse(res, {
