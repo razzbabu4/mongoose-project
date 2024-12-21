@@ -9,6 +9,7 @@ import { Course } from "../courses/course.model";
 import { Faculty } from "../faculty/faculty.model";
 import { hasTimeConflict } from "./offeredCourse.utils";
 import { RegistrationsStatus } from "../semesterRegistration/semesterRegistrations.constant";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
@@ -129,8 +130,17 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     return result;
 };
 
-const getAllOfferedCoursesFromDB = async () => {
-    const result = await offeredCourse.find();
+const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
+    const offeredCourseQuery = new QueryBuilder(
+        offeredCourse.find(),
+        query
+    )
+        .filter()
+        .sort()
+        .paginate()
+        .fields()
+
+    const result = await offeredCourseQuery.modelQuery;
     return result;
 };
 
@@ -195,9 +205,39 @@ const updateSingleOfferedCourseIntoDB = async (
     return result;
 };
 
+const deleteOfferedCourseFromDB = async (id: string) => {
+    /**
+     * Step 1: check if the offered course exists
+     * Step 2: check if the semester registration status is upcoming
+     * Step 3: delete the offered course
+     */
+    const isOfferedCourseExists = await offeredCourse.findById(id);
+
+    if (!isOfferedCourseExists) {
+        throw new AppError(StatusCodes.NOT_FOUND, 'Offered Course not found');
+    }
+
+    const semesterRegistration = isOfferedCourseExists.semesterRegistration;
+
+    const semesterRegistrationStatus =
+        await SemesterRegistrations.findById(semesterRegistration).select('status');
+
+    if (semesterRegistrationStatus?.status !== 'UPCOMING') {
+        throw new AppError(
+            StatusCodes.BAD_REQUEST,
+            `Offered course can not delete ! because the semester ${semesterRegistrationStatus}`,
+        );
+    }
+
+    const result = await offeredCourse.findByIdAndDelete(id);
+
+    return result;
+};
+
 export const OfferedCourseServices = {
     createOfferedCourseIntoDB,
     getAllOfferedCoursesFromDB,
     getSingleOfferedCourseFromDB,
     updateSingleOfferedCourseIntoDB,
+    deleteOfferedCourseFromDB
 };
