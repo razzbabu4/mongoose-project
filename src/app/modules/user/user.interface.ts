@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Model } from "mongoose";
+import { Model } from 'mongoose';
 
 export interface TUser {
   id: string;
@@ -10,9 +10,12 @@ export interface TUser {
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 export interface UserModel extends Model<TUser> {
   isUserExistsByCustomId(id: string): Promise<TUser>;
-  isPasswordMatched(plainTextPassword: string, hashPassword: string): Promise<boolean>;
+  isPasswordMatched(
+    plainTextPassword: string,
+    hashPassword: string,
+  ): Promise<boolean>;
 }
