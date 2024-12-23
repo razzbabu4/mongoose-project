@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import { TUserRole } from '../user/user.interface';
+import { User } from '../user/user.model';
 
 const auth = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -16,26 +17,46 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
     // check if the token is valid
-    jwt.verify(token, config.jwtSecret as string, function (err, decoded) {
-      // err
-      if (err) {
-        throw new AppError(
-          StatusCodes.UNAUTHORIZED,
-          'You are not authorized !!',
-        );
-      }
+    const decoded = jwt.verify(token, config.jwtSecret as string) as JwtPayload;
 
-      // check user role
-      const role = (decoded as JwtPayload).role;
-      if (requiredRoles && !requiredRoles.includes(role)) {
-        throw new AppError(
-          StatusCodes.UNAUTHORIZED,
-          'You are not authorized !!',
-        );
-      }
+    const { role, userId, iat } = decoded;
 
-      req.user = decoded as JwtPayload;
-    });
+    // checking if the user exist
+    const user = await User.isUserExistsByCustomId(userId);
+    if (!user) {
+      throw new AppError(StatusCodes.NOT_FOUND, 'This user is not exist');
+    }
+
+    // checking if user is deleted
+    const isUserDeleted = user?.isDeleted;
+    if (isUserDeleted) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This user is mark as deleted');
+    }
+
+    // checking if user is blocked
+    const userStatus = user.status === 'blocked';
+    if (userStatus) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'This user is blocked');
+    }
+
+    // token verify after password change
+    if (
+      user.passwordChangedAt &&
+      User.isJwtIssuedBeforePasswordChange(
+        user.passwordChangedAt,
+        iat as number,
+      )
+    ) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized !!');
+    }
+
+    // check user role
+    if (requiredRoles && !requiredRoles.includes(role)) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized !!');
+    }
+
+    req.user = decoded as JwtPayload;
+
     next();
   });
 };
